@@ -1,0 +1,510 @@
+Guia Completo T-Deck Plus Meshtastic
+
+Versão 1.0 | Abril 2026
+
+
+Índice
+
+Introdução
+Requisitos
+Modo Programming (DFU/Flash)
+Instalação Firmware - Erase + Flash
+Atualização Firmware (Normal)
+Configuração Inicial
+Bluetooth - Modo Programming
+Bluetooth - Desativar para Uso Standalone
+Mapas Offline (Opcional)
+Atalhos de Teclado
+Troubleshooting
+Recursos Adicionais
+
+
+Introdução
+
+O LilyGO T-Deck Plus é um dispositivo standalone completo para Meshtastic com ecrã, teclado QWERTY, GPS integrado e LoRa. Este guia cobre desde a instalação inicial até configuração avançada.
+Características principais: - ESP32-S3 + SX1262 LoRa - GPS L76K integrado - Ecrã TFT 2.8" touchscreen - Teclado físico QWERTY - Bateria 18650 (não incluída) - MicroSD para mapas offline
+
+
+Requisitos
+Hardware
+
+LilyGO T-Deck Plus
+Cabo USB-C (dados, não apenas carga)
+Bateria 18650 (recomendado: 3000mAh+)
+Antena LoRa 868MHz (Europa) ou 915MHz (US)
+MicroSD card FAT32 ≤32GB (opcional, para mapas)
+
+Software
+
+Browser Chromium (Chrome, Edge, Brave)
+Internet ativa
+Meshtastic App (Android/iOS) para pairing Bluetooth
+
+Avisos Importantes
+
+Nunca ligue o dispositivo sem antena conectada - pode danificar o módulo LoRa Usa sempre cabo USB-C com suporte de dados (não apenas carga)
+Define região correta (EU_868 para Portugal) para cumprir regulamentação ANACOM
+
+
+Modo Programming (DFU/Flash)
+
+Para flashear firmware ou fazer erase, o T-Deck Plus precisa entrar em modo DFU.
+
+Procedimento
+
+Desliga o T-Deck (switch lateral OFF)
+Pressiona e mantém o trackball (botão central)
+Enquanto pressiona trackball, liga o T-Deck (switch ON)
+Aguarda 2-3 segundos mantendo trackball pressionado
+Liberta o trackball
+Conecta cabo USB-C ao computador
+
+Confirmação de Modo DFU
+
+Ecrã do T-Deck fica completamente negro (sem backlight)
+No computador aparece dispositivo: "USB JTAG/serial debug unit" ou "ESP32-S3"
+
+Nota: Se não funcionar à primeira, repete o processo. Alguns cabos USB-C to USB-C podem causar problemas - tenta USB-A to USB-C.
+
+
+Instalação Firmware - Erase + Flash
+
+Quando usar: Primeira instalação, dispositivo com problemas graves, mudança de firmware type (ex: alpha → beta).
+
+Passo a Passo
+
+Entra em Modo Programming
+
+Segue procedimento da secção anterior.
+
+Acede ao Web Flasher
+
+Abre browser Chromium
+Vai a: https://flasher.meshtastic.org
+
+Seleciona Dispositivo
+
+Clica "Select Target Device"
+Escolhe: "LILYGO T-Deck" (funciona para T-Deck Plus)
+
+Escolhe Versão Firmware
+
+Recomendado: Seleciona versão BETA mais recente (evita alpha em produção)
+Exemplo:	ou superior
+Não uses versões alpha para uso diário
+
+Configura Full Erase
+
+ Ativa opção: "Full Erase and Install"
+Isto apaga toda flash incluindo configurações antigas
+
+Conecta Dispositivo
+
+Clica "Connect"
+Seleciona porta: "USB JTAG/serial debug unit"
+Clica "Connect"
+
+Flash
+
+Clica "Flash" e depois "CONTINUE" Aguarda conclusão (1-3 minutos)
+NÃO desconectes USB durante processo
+
+Finalização
+
+Quando vires "Flash Complete", fecha browser
+Desliga T-Deck (switch OFF)
+Liga novamente (switch ON)
+Dispositivo arranca com firmware fresco e MUI (Meshtastic UI)
+
+
+Atualização Firmware (Normal)
+
+Quando usar: Atualizar para versão mais recente sem perder configurações.
+
+Passo a Passo
+Entra em Modo Programming
+
+Segue procedimento: Desliga → Pressiona trackball → Liga → Aguarda → Liberta → Conecta USB.
+
+Web Flasher
+
+Vai a: https://flasher.meshtastic.org Seleciona: "LILYGO T-Deck" Escolhe versão firmware desejada
+
+Update (Sem Erase)
+
+ Desativa opção "Full Erase" Clica "Flash"
+
+Flash e Reboot
+
+Aguarda conclusão Desliga e liga T-Deck
+Configurações mantêm-se (região, nome node, canais, etc.)
+
+Nota: Se tiveres problemas após update, faz Full Erase + Flash.
+
+
+Configuração Inicial
+
+Após flash inicial, configura parâmetros essenciais.
+
+Via Meshtastic Web Client
+
+Conecta via USB Serial
+
+Vai a: https://client.meshtastic.org Clica "Connect" → "USB Serial" Seleciona porta do T-Deck
+
+Define Região LoRa
+
+Menu lateral: "LoRa"
+Region: Seleciona EU_868 (Portugal/Europa) Clica "Save"
+ Obrigatório em Portugal: EU_868 (868MHz, 500mW, 10% duty cycle) conforme ANACOM.
+
+Configura Posição GPS
+
+Menu: "Position"
+GPS Mode: "Enabled"
+GPS Update Interval: 120s (ajusta conforme necessidade) Position Broadcast: Ativa se quiseres partilhar localização Clica "Save"
+
+Node Info (Opcional)
+
+Menu: "Settings" → "Device"
+Node Name: Define nome do teu node
+Role: CLIENT (uso normal) ou ROUTER (node fixo)
+
+Canais (Opcional)
+
+Menu: "Channels"
+Configura canais adicionais ou junta-te a mesh existente
+Primary Channel vem pré-configurado
+
+Via MUI no T-Deck
+
+Após configuração inicial via web/app, podes ajustar no próprio T-Deck: - Settings → LoRa → Verifica região - Settings → Position → GPS status - Map →
+Visualiza nodes e posição GPS
+
+Bluetooth - Modo Programming
+
+Quando usar: Pairing inicial com smartphone, configuração via app, troubleshooting.
+
+Activar Bluetooth Programming Mode
+
+Via MUI (Firmware 2.6+)
+
+No T-Deck, vai a: Settings (ícone engrenagem)
+Seleciona: "Reboot/Shutdown"
+Clica no ícone Bluetooth (centro do ecrã)
+Ecrã mostra: ">> Programming Mode <<" com passcode (ex: 123456)
+
+Pairing com Smartphone
+
+Abre Meshtastic App (Android/iOS)
+Vai a Bluetooth → Scan
+Seleciona teu T-Deck (nome do node)
+Insere passcode mostrado no ecrã do T-Deck
+Conecta e configura via app
+
+Sair de Bluetooth Programming Mode
+
+Pressiona e mantém ícone Bluetooth no ecrã do T-Deck
+Dispositivo reboota de volta ao MUI normal
+
+Importante:
+- Bluetooth Programming Mode é para pairing/configuração inicial - Para uso diário com Bluetooth, muda para BaseUI (próxima secção) - MUI não suporta Bluetooth ativo permanentemente (usa mesma API)
+
+
+Bluetooth - Desativar para Uso Standalone
+
+Quando usar: Operação standalone sem smartphone, economizar bateria, usar MUI com mapas.
+
+Opção 1: Usar MUI (Modo Standalone Recomendado)
+
+MUI (Meshtastic UI) é a interface visual completa mas não suporta Bluetooth simultâneo.
+
+Vantagens: Mapas, teclado, visualização completa de mesh
+Desvantagem: Sem Bluetooth para app Para garantir Bluetooth desligado:
+Via Meshtastic CLI
+
+
+Ou via Web Client: - Settings → Bluetooth → Enabled: OFF → Save
+
+Opção 2: BaseUI (Bluetooth Permanente)
+
+Se precisas Bluetooth ativo para app 24/7:
+
+Mudar para BaseUI
+
+Via CLI:
+
+Ou via Web Client: - Settings → Device → Display Type: BaseUI - Save e reboot
+
+BaseUI características: - Interface simples (sem mapas visuais) - Bluetooth funciona permanentemente - Menor consumo recursos - Ideal para controlo via app
+
+Comparação Rápida
+
+
+Recomendação: Usa MUI para standalone com mapas. Muda para BaseUI se precisas app smartphone sempre conectada.
+
+
+Mapas Offline (Opcional)
+
+Adicionar mapas offline ao T-Deck Plus permite visualizar mesh network sobre cartografia real.
+
+Requisitos
+
+MicroSD card FAT32, ≤32GB
+Pack de tiles de mapa (OpenStreetMap, Google Maps, Atlas)
+
+Estrutura de Pastas Correta
+
+
+
+Importante:
+- Cada pasta numerada (1-15) = zoom level - Dentro: estrutura (cobrem mundo inteiro, poucos tiles)
+
+
+(tiles) - Para Portugal: zoom 8-14 são essenciais - Zoom 1-5 geralmente vazios
+
+Instalação Passo a Passo
+
+Método 1: Pack Pronto Atlas (Recomendado Global)
+
+Baixa pack de mapas:
+
+ Atlas (global, inclui Europa): https://github.com/meshtastic/device-ui/tree/master/maps
+ Ficheiro:
+
+Extrai ZIP:
+
+ Descompacta atlas.zip
+ Vais ter pasta atlas/ com subpastas 0-15
+
+Copia para SD:
+
+ Cria pasta /maps/ na raiz da SD
+ Copia pasta atlas/ completa para /maps/atlas/
+ Estrutura final: /maps/atlas/[0-15]/...
+
+Verifica conteúdo:
+
+ Abre	(ou 12)
+
+ Deve ter subpastas e ficheiros
+ Se vazio, pack está corrompido
+
+lá no fundo
+
+
+Método 2: Pack Portugal (mapsportugal115OSM.zip)
+Para usar o pack específico de Portugal:
+
+Extrai o ficheiro ZIP:
+
+ Descompacta
+ Vais obter uma estrutura de pastas
+
+Navega até à pasta openstreetmap:
+
+Copia o conteúdo da pasta openstreetmap:
+
+ Entra na pasta	do ZIP extraído
+ Seleciona TODAS as pastas numeradas (1, 2, 3... até 15)
+ Copia (Ctrl+C / Cmd+C)
+
+Cola no SD dentro da pasta Google Maps:
+
+Insere SD no computador
+Navega para:
+Cola (Ctrl+V / Cmd+V) todo o conteúdo copiado
+
+Estrutura Final no SD:
+
+
+Diagrama Visual do Processo:
+
+
+Verifica instalação:
+
+ Abre	no SD
+
+ Deve ter subpastas numeradas e ficheiros
+ Se vazio, repete extração e cópia
+
+Usar no T-Deck:
+
+lá dentro
+
+
+ Insere SD no T-Deck
+ Vai a Map
+ Long-press ícone mapa → Seleciona "Google Maps"
+ Faz zoom para Portugal e aguarda GPS fix
+
+Nota: O nome da pasta "Google Maps" no SD é apenas um label - podes renomear para "Portugal" ou outro nome se preferires. O importante é a estrutura interna (pastas 1-15 com tiles).
+
+Método 3: Gerar Tiles Personalizados
+Script Python MapDL:
+# Baixa script
+wget https://gist.githubusercontent.com/droberin/b333a216d860361e329e74f59f4af4ba/raw/MapDL.py
+
+# Edita coordenadas Portugal # lat: 37 a 42
+# lon: -9.5 a -6
+# zoom: 8-14 python3 MapDL.py
+# Copia output para /maps/portugal/
+
+MOBAC (Mobile Atlas Creator): - Download: https://mobac.sourceforge.io - Seleciona região: Portugal - Zoom levels: 8-14 - Output format: OSM Tile format -Exporta e copia para SD
+Usar Mapas no T-Deck
+
+Insere SD no T-Deck (slot lateral)
+Liga dispositivo
+Vai a Map (ícone mapa)
+Long-press ícone de mapa (ou Settings → Map)
+Seleciona fonte:	ou	ou
+Faz zoom in para Portugal (trackball + scroll)
+GPS fix lá fora - posição aparece no mapa
+
+Troubleshooting Mapas
+
+Mapa não aparece: - SD formatada FAT32? (não NTFS/exFAT) - Estrutura	correta? - Pastas de zoom 8-14 têm ficheiros	?
+
+Mapa carrega devagar: - SD lenta (class 10+ recomendado) - Demasiados zoom levels (apaga 1-7 se não usares)
+
+Coordenadas erradas: - Aguarda GPS fix (pode demorar 5-10min inicial) - Vai para exterior com vista céu aberto
+
+
+Atalhos de Teclado
+
+T-Deck Plus keyboard shortcuts para eficiência.
+
+Atalhos Gerais
+
+
+
+Notas
+
+ALT + / SYM + teclas: pressiona e liberta
+Atalhos SYM + não ativos em tabs SND e SET
+Fn pode precisar ativação em firmware 2.7+
+
+
+Troubleshooting
+Dispositivo Não Entra em Modo DFU
+
+Sintomas: Ecrã liga normal, computador não deteta dispositivo flash.
+Soluções: 1. Repete sequência: Desliga → Trackball → Liga → Aguarda 3s → Liberta 2. Testa cabo: Usa cabo USB-A to USB-C (em vez de C-C) 3. Drivers:
+Windows pode precisar drivers CH340/CP210x 4. Tenta 3-5 vezes: Timing é crítico
+
+Bluetooth Não Conecta
+
+Sintomas: App não vê dispositivo, pairing falha.
+
+Soluções:
+
+Se em MUI: - Bluetooth não funciona em MUI normal - Usa Bluetooth Programming Mode: Settings → Reboot → Bluetooth icon - Ou muda para BaseUI
+permanentemente
+
+Se Bluetooth disabled:
+
+Se após firmware update: - Pode desativar-se sozinho - Re-ativa via CLI ou web client - Se persistir, rollback para firmware anterior (2.5.18 conhecido funcionar)
+
+iPhone issues: - Alguns firmwares (2.6.x early) têm bugs com iOS - Usa web client USB como alternativa - Atualiza para latest beta firmware
+
+GPS Não Fixa
+
+Sintomas: Posição não atualiza, "No GPS fix" permanente.
+
+Soluções: 1. Vai para exterior: GPS precisa vista céu aberto 2. Aguarda 5-15min: First fix demora (cold start) 3. Verifica configuração:
+4. Pins GPIO corretos (T-Deck Plus): - RX: GPIO 34 - TX: GPIO 12 -
+Configura via web client: Position → GPS Pins
+
+1. Antena GPS: Alguns modelos têm antena cerâmica integrada, outros precisam externa
+
+Mapas Não Aparecem
+
+Ver secção Troubleshooting Mapas em Mapas Offline.
+
+Dispositivo Não Liga
+
+Soluções: 1. Bateria: Verifica 18650 inserida corretamente (+/- poles) 2. Carrega: Conecta USB-C, aguarda 30min 3. Switch lateral: Confirma posição ON 4.
+Reset: Pressiona botão RESET (pequeno buraco lateral)
+
+Firmware Brick / Não Arranca
+
+Soluções: 1. Full Erase + Flash: Modo DFU → Full Erase → Flash firmware beta 2. Testa firmwares diferentes: 2.5.x vs 2.6.x 3. Meshtastic CLI noproto:
+4. Factory reset via CLI:
+
+Nodes Não Aparecem / Mesh Vazio
+
+Soluções: 1. Região correta: EU_868 em Portugal 2. Antena conectada: Sem antena = sem TX/RX 3. Frequência slot: Verifica se mesh local usa slot diferente
+4. Range: Nodes precisam estar dentro alcance LoRa (~5km urbano, 20km+ rural) 5. Canais: Primary channel deve match com mesh local
+
+Consumo Bateria Alto
+
+Soluções: 1. Desativa Bluetooth: Se não usado 2. GPS update interval: Aumenta para 300s+ (em vez de 120s) 3. Screen timeout: SYM + L para ativar timeout
+4. Role: Define como CLIENT (não ROUTER) se móvel
+
+
+Recursos Adicionais
+Links Oficiais
+
+Meshtastic Web Flasher: https://flasher.meshtastic.org
+Meshtastic Web Client: https://client.meshtastic.org
+Documentação Oficial: https://meshtastic.org/docs
+Firmware Releases: https://github.com/meshtastic/firmware/releases
+
+Comunidade Portugal
+
+Meshtastic PT: https://meshtastic.pt
+Mapa Nodes Portugal: https://meshtastic.pt/map
+Malha PT: https://malha.meshtastic.pt
+FAQ PT: https://meshtastic.pt/faq
+Facebook Meshtastic Portugal: Grupo ativo com suporte
+Recursos Mapas
+
+MUI Maps GitHub: https://github.com/meshtastic/device-ui/tree/master/maps
+MapDL Script: https://gist.github.com/droberin/b333a216d860361e329e74f59f4af4ba
+MOBAC: https://mobac.sourceforge.io
+Wind & Wireless Guide: https://windandwireless.com/pages/techlab/meshtasticmaps
+
+CLI Python
+# Instalar CLI
+pip3 install --upgrade "meshtastic[cli]"
+
+# Comandos úteis
+meshtastic --info	# Info do node
+meshtastic --nodes	# Lista nodes mesh meshtastic --set lora.region EU_868 # Define região meshtastic --set bluetooth.enabled false
+meshtastic --get device	# Configuração completa
+meshtastic --factory-reset	# Reset total
+
+Regulamentação Portugal (ANACOM)
+
+Frequência: 868 MHz (EU_868) Potência máxima: 500mW (27dBm) Duty cycle: 10%
+Alternativa: 433 MHz, 10mW, 10% duty cycle
+
+
+Checklist Instalação Completa
+
+[ ] Antena LoRa conectada [ ] Bateria 18650 inserida
+[ ] Firmware flasheado (beta recomendado) [ ] Região LoRa: EU_868
+[ ] GPS ativado e pinos corretos [ ] Nome node configurado
+[ ] Bluetooth: Programming Mode testado + desativado (se standalone) [ ] Mapas offline instalados (opcional)
+[ ] GPS fix obtido (exterior)
+[ ] Primeiro node mesh detectado
+[ ] App smartphone pareada (se usar Bluetooth)
+
+
+Changelog Guia
+
+v1.0 (Abril 2026): Versão inicial completa
+
+
+Contribuições: Este guia é open-source. Melhorias e correções são bem-vindas via comunidade Meshtastic PT.
+
+
+☥ cypherpunks write code /// nature writes resilience /// we bridge both. ☥
+
+---
+
+licensed under cc by-sa 4.0 · https://creativecommons.org/licenses/by-sa/4.0/
+
+*walk quietly, but keep the signal alive.*
+
+₿uilt with Love  🧡  in cooperation with Nature  🌿

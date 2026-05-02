@@ -1,0 +1,197 @@
+# T‑Deck Plus – Touch Fix
+## Guia de Correção de Ecrã Táctil
+**Versão:** 1.0
+**Data:** 28-04-2026
+
+
+---
+
+## Sobre este documento
+Este documento foca‑se apenas na correção de problemas de ecrã táctil (lag, falta
+de resposta, toques errados) no T‑Deck Plus.
+Usa este guia **apenas** se o ecrã táctil do teu T‑Deck Plus estiver com problemas
+depois de flashares firmware (Meshtastic, MeshCore, UI custom, etc.).
+
+---
+
+## Quando é que precisas do Touch Fix?
+Alguns T‑Deck Plus vêm de fábrica com uma configuração de touch diferente, e
+certos firmwares (ou drivers de touch) podem alterar essa configuração interna do
+chip de toque.
+Sinais típicos de que precisas do Touch Fix:
+- Ecrã táctil muito laggy ou que reage com grande atraso.
+- Toques que são interpretados no sítio errado (por exemplo, clicas num botão e
+ativa outro).
+- Touch que deixa de funcionar corretamente depois de flashares Meshtastic, UI
+fancy, etc.
+O **TouchFix** é um firmware especial que reconfigura o chip de touch e corrige
+estes problemas.
+
+---
+
+## Visão geral do processo
+O processo completo é:
+1. Entrar no modo de flash (DFU) no T‑Deck Plus.
+2. Flashar o ficheiro especial `T-Deck-Plus-TouchFix_241203.bin` usando o web
+flasher da Espressif.
+3. Sem apagar o chip, voltar a flashar o firmware que queres usar (por exemplo,
+Meshtastic via web flasher).
+4. Testar o touch na UI final.
+> Nota importante: vários utilizadores reportam que **não deves fazer “erase and
+install” depois do TouchFix**, mas apenas “install/update” por cima, ou arriscas
+apagar a correção de touch aplicada ao chip.
+
+---
+
+## Pré‑requisitos
+Antes de começares, garante que tens:
+- **Browser compatível com WebSerial/WebUSB**: Chrome, Edge ou outro baseado
+em Chromium.
+- **Cabo USB‑C de dados** (não apenas de carregamento).
+- O ficheiro **TouchFix**:
+- `T-Deck-Plus-TouchFix_241203.bin` da pasta `firmware` do repositório da LilyGO
+para o T‑Deck Plus.
+- O firmware final que pretendes usar:
+- Por exemplo, Meshtastic via Meshtastic Web Flasher (`https://
+flasher.meshtastic.org`).
+Opcionalmente, para debug:
+- **SerialTool** (Windows, macOS, Linux) para veres logs de boot e mensagens de
+erro.
+
+---
+
+## Como colocar o T‑Deck Plus em modo de flash (DFU)
+Colocar o T‑Deck Plus em modo de flash pode ser um pouco temperamental, por
+isso segue estes passos com calma.
+1. Desliga completamente o T‑Deck Plus pelo interruptor lateral.
+2. Garante que o cabo USB está ligado ao computador, mas ainda **não** ao
+T‑Deck (ou experimenta também com o cabo já ligado ao T‑Deck, alguns
+utilizadores têm mais sucesso assim).
+3. Mantém o **botão do trackball** pressionado.
+4. Enquanto seguras o trackball, **liga o T‑Deck** no interruptor.
+5. Só larga o trackball depois de alguns segundos.
+Se correu bem:
+- O ecrã fica sem backlight (aparência “apagado”), mas o dispositivo entra em modo
+de flash.
+- O browser deverá reconhecer uma nova porta série quando usares o web flasher.
+Se não funcionar à primeira, tenta:
+- Repetir o processo com o cabo USB já ligado ao T‑Deck antes de o ligares.
+- Usar a combinação: manter premido **RESET** + trackball, largar RESET
+mantendo o trackball, e depois ligar.
+
+---
+
+## Passo 1 – Flashar o firmware TouchFix
+Este passo é igual em Mac, Windows ou Linux, desde que uses um browser
+compatível.
+1. Abre o **web flasher da Espressif**:
+- `https://espressif.github.io/esptool-js/`
+2. Clica em **“Connect”** e escolhe a porta correspondente ao T‑Deck Plus.
+3. Em **“Add file”**, seleciona o ficheiro `T-Deck-Plus-TouchFix_241203.bin`.
+4. Define o **offset** de escrita para `0x0` (zero), não `0x10000`.
+5. Inicia o processo de flash e aguarda até concluir com sucesso (barra de
+progresso e mensagem de confirmação).
+Depois deste flash:
+- O T‑Deck pode arrancar sem UI “bonita”, mas a configuração interna do touch fica
+corrigida.
+> Dica: se quiseres confirmar que tudo correu bem, podes usar o SerialTool para ver
+o log de boot (ver secção “Debug via SerialTool”).
+
+---
+
+## Passo 2 – Flashar de novo o firmware Meshtastic (ou outro)
+Agora que o TouchFix já está aplicado, vais instalar o firmware que realmente
+queres usar no dia a dia (normalmente Meshtastic).
+1. Volta a colocar o T‑Deck Plus em **modo de flash**, usando o mesmo método do
+trackball.
+2. Abre o **Meshtastic Web Flasher** em Chrome/Edge:
+- `https://flasher.meshtastic.org`
+3. Seleciona o **device** correspondente ao T‑Deck Plus na lista de dispositivos
+suportados.
+4. Clica em **“Connect”** e escolhe a porta do T‑Deck.
+5. Escolhe a versão de firmware que queres (por exemplo, o firmware com Fancy UI
+para T‑Deck Plus, se estiver disponível).
+6. Inicia o flash seguindo as instruções do web flasher.
+> Importante: tenta **não usar “Erase” completo** depois de teres corrido o
+TouchFix; limita‑te a instalar o firmware por cima, senão podes apagar a correção de
+touch aplicada ao chip.
+
+---
+
+## Passo 3 – Testar o ecrã táctil
+Com o firmware final instalado:
+1. Desliga e volta a ligar o T‑Deck Plus normalmente (sem trackball).
+2. Espera o arranque completo do firmware (Meshtastic UI, etc.).
+3. Testa o toque de forma geral:
+- Tocar em botões de menu.
+- Scroll, sliders, teclados on‑screen, etc.
+### Dicas práticas para confirmar que o TouchFix está a funcionar
+Há duas formas muito rápidas de perceber se o update do TouchFix ficou mesmo
+bem aplicado:
+- **Botão Home (pressionar e manter)**
+Mantém o botão Home carregado e repara como o resync responde: se o touch
+estiver bom, a ação responde logo de forma fluida e previsível, sem atrasos ou
+toques “perdidos”.
+- **Mudança de mapas**
+Vai ao ecrã onde consegues selecionar diferentes mapas e muda entre eles. Se o
+TouchFix estiver a funcionar, notas claramente que os toques para mudar de mapa
+são detetados com precisão e a mudança acontece sem hesitações. É uma forma
+rápida de sentir a diferença antes/depois.
+Se tudo correu bem:
+- O touch já não deve estar laggy.
+- Os toques devem ser detetados no sítio certo, e estas ações no Home e na
+escolha de mapas tornam‑se suaves e previsíveis.
+Se ainda estiver com problemas:
+- Verifica se usaste o ficheiro de TouchFix correto para o teu modelo.
+- Experimenta o firmware de UI recomendado pela LilyGO (por exemplo, `T-Deck-
+Plus-Device-UI-v2.6.5.bin`) para testar o touch sem Meshtastic.
+- Consulta documentação e discussões recentes sobre T‑Deck Plus touch em
+comunidades Meshtastic/LilyGO.
+
+---
+
+## Opcional – Debug via SerialTool (Mac / Windows / Linux)
+Esta secção é opcional e serve para quem quer ver logs de boot, verificar erros de
+touch ou confirmar que o dispositivo arrancou bem, em qualquer sistema operativo.
+### O que é o SerialTool?
+O **SerialTool** é uma aplicação multi‑plataforma de porta série/TCP/UDP com
+interface gráfica, que corre em Windows, macOS e Linux.
+É muito útil para monitorizar o arranque do T‑Deck Plus, ver mensagens de erro, e
+confirmar se o firmware está vivo mesmo quando a UI não aparece.
+### Download e instalação
+- Site oficial: `https://serialtool.com` (download para Windows, macOS e Linux).
+- Em macOS, vais obter um `.dmg` ou `.zip` com a app; em Windows, um instalador
+`.exe` ou `.msi`; em Linux, binário ou AppImage dependendo da versão.
+### Ligar o T‑Deck Plus ao SerialTool
+1. Liga o T‑Deck Plus ao computador via cabo USB‑C.
+2. Abre o **SerialTool**.
+3. Na lista de portas:
+- Em Windows, procura algo como `COM3`, `COM4`, etc.
+- Em macOS, algo como `/dev/cu.usbmodem*` ou `/dev/cu.SLAB_USBtoUART`.
+- Em Linux, portas como `/dev/ttyUSB0` ou `/dev/ttyACM0`.
+4. Seleciona:
+- **Baud rate**: normalmente `115200` para firmware ESP32 como Meshtastic.
+- 8N1 (8 data bits, No parity, 1 stop bit), que é o padrão.
+5. Clica em **Connect** e, se necessário, reinicia o T‑Deck para apanhar o log de
+boot desde o início.
+### O que observar no log
+Com o T‑Deck a arrancar, vais ver:
+- Mensagens de boot do ESP32.
+- Output do firmware (Meshtastic, UI, etc.), incluindo erros de inicialização de
+periféricos como o touch.
+- Se o TouchFix foi aplicado corretamente, não devem aparecer erros críticos ao
+inicializar o driver de touch.
+Isto é útil para:
+- Confirmar que o dispositivo arranca mesmo que o ecrã esteja preto (por exemplo,
+brilho no mínimo ou falha de UI).
+- Ver se há mensagens repetidas relacionadas com o touch depois de flashares
+Meshtastic.
+
+
+---
+
+licensed under cc by-sa 4.0 · https://creativecommons.org/licenses/by-sa/4.0/
+
+*walk quietly, but keep the signal alive.*
+
+₿uilt with Love  🧡  in cooperation with Nature  🌿
