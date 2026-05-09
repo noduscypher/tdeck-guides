@@ -1,3 +1,8 @@
+> ⚠️ Before you start  
+> This guide focuses on using the T‑Deck / T‑Deck Plus with Meshtastic (firmware, UI, maps, battery, troubleshooting).  
+> It does not define legal limits or network‑wide best practices.  
+> For EU868 presets, roles (CLIENT, ROUTER, etc.), conservative range and regulatory notes in PT/EN/ES, always refer to:  
+> https://github.com/noduscypher/mesh-guides
 # T-Deck Plus Meshtastic — Complete Guide
 
 **Version 1.0 | April 2026**
