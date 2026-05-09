@@ -1,3 +1,8 @@
+> ⚠️ Antes de começar  
+> Este guia foca-se no uso do T‑Deck / T‑Deck Plus com Meshtastic (firmware, UI, mapas, bateria, troubleshooting).  
+> Não define limites legais nem boas práticas de planeamento de rede.  
+> Para presets EU868, roles (CLIENT, ROUTER, etc.), alcance conservador e notas regulatórias em PT/EN/ES, usa sempre:  
+> https://github.com/noduscypher/mesh-guides
 # T-Deck Plus — Touch Fix
 
 ## Guia de Correção de Ecrã Táctil
